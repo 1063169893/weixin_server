@@ -2,6 +2,7 @@ var sha1 = require("sha1");
 var Accessid = require("./require")
 var getRowBody = require("raw-body")
 var xml2js = require("./xml2js")
+var compiled = require("./tpl")
 module.exports = function (opts) {
     var access = new Accessid(opts)
     return function* (next) {
@@ -18,11 +19,11 @@ module.exports = function (opts) {
                 console.log('验证成功')
                 this.body = echostr + ''
             } else (
-                _this.response.body = 'woron 002315165sadasdsda0202031dAFSADCVSERVARADVERVADCSVAW'
+                _this.response.body = 'Wrong'
             )
         } else if (this.request.method === 'POST') {
             if (sha !== signature) {
-                this.body = 'woron'
+                this.body = 'Wrong'
                 return false
             }
             var data = yield getRowBody(this.req, {
@@ -32,71 +33,14 @@ module.exports = function (opts) {
             })
             var centent = yield xml2js.gatUserData(data)
 
-            var data = yield xml2js.formatCentent(centent.xml)
-            console.log(data)
-            var text = '欢迎关注我的公众号哦！！'
-            if (data.MsgType === 'event') {
-                if (data.Event === 'subscribe') {
-                    var now = new Date().getTime()
-                    if (data.FromUserName === 'oO9M05iHPC6bEqQww9OzGxqvHb7c') {
-                        _this.response.status = 200
-                        _this.response.type = 'application/xml'
-                        _this.response.body = ('<xml>' +
-                            '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
-                            '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
-                            '<CreateTime>' + now + '</CreateTime>' +
-                            '<MsgType><![CDATA[text]]></MsgType>' +
-                            '<Content><![CDATA[霞姐，欢迎关注我的公众号哦！]]></Content>' +
-                            '</xml>')
-                        return
-                    }
-                    if (data.FromUserName === 'oO9M05lUR5nGNxRIChnijtGNms94') {
-                        _this.response.status = 200
-                        _this.response.type = 'application/xml'
-                        _this.response.body = ('<xml>' +
-                            '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
-                            '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
-                            '<CreateTime>' + now + '</CreateTime>' +
-                            '<MsgType><![CDATA[text]]></MsgType>' +
-                            '<Content><![CDATA[嗨婷婷，欢迎关注我的公众号哦！]]></Content>' +
-                            '</xml>')
-                    }
-                    _this.response.status = 200
-                    _this.response.type = 'application/xml'
-                    _this.response.body = ('<xml>' +
-                        '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
-                        '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
-                        '<CreateTime>' + now + '</CreateTime>' +
-                        '<MsgType><![CDATA[text]]></MsgType>' +
-                        '<Content><![CDATA[' + text + ']]></Content>' +
-                        '</xml>')
-
-                }
-            }
-            if (data.MsgType === 'text') {
-                _this.response.status = 200
-                _this.response.type = 'application/xml'
-                _this.response.body = "<xml>" +
-                    '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
-                    '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
-                    "<CreateTime>" + now + "</CreateTime>" +
-                    "<MsgType><![CDATA[text]]></MsgType>" +
-                    "<Content><![CDATA[还没开发好哈，不用试了！！！]]></Content>" +
-                    "<MsgId>" + data.MsgId + "</MsgId>" +
-                    "</xml>"
-                if (data.Content === '我爱你') {
-                    _this.response.status = 200
-                    _this.response.type = 'application/xml'
-                    _this.response.body = "<xml>" +
-                        '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
-                        '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
-                        "<CreateTime>" + now + "</CreateTime>" +
-                        "<MsgType><![CDATA[text]]></MsgType>" +
-                        "<Content><![CDATA[嘿嘿，你好骚！！！]]></Content>" +
-                        "<MsgId>" + data.MsgId + "</MsgId>" +
-                        "</xml>"
-                }
-            }
+            var datanew = yield xml2js.formatCentent(centent.xml)
+            console.log(datanew)
+            var center = yield access.setOpenUserData(datanew)
+            var xml2Data = compiled.compiled(center)
+            console.log(xml2Data)
+            _this.response.status = 200
+            _this.response.type = 'application/xml'
+            _this.response.body = xml2Data
         }
     }
 }

@@ -8,7 +8,6 @@ module.exports = function Accessid(opts) {
     _this.Token = opts.Token
     _this.getDirWords = opts.getDirWords
     _this.settDirWords = opts.settDirWords
-
     _this.getDirWords(wechat, 'utf-8')
         .then(res => {
             try {
@@ -31,7 +30,7 @@ module.exports = function Accessid(opts) {
             return false
         }
         var nowDate = (new Date().getTime()) - data.ontime + 200
-        console.log(nowDate / 1000, '秒')
+        console.log('access_token时间', nowDate / 1000, '秒')
         var outTime = data.expires_in * 1000
         if (nowDate < outTime) {
             return true
@@ -49,8 +48,71 @@ module.exports = function Accessid(opts) {
             res.data.ontime = (new Date()).valueOf()
             _this.settDirWords(wechat, JSON.stringify(res.data))
         }).catch(function (err) {
-            console.log('222222222222', err)
+            console.log('22', err)
         })
     }
+    Accessid.prototype.setOpenUserData = function (datas) {
+        // if (datas.MsgType === 'text')
+        return new Promise(function (resolve, reject) {
+            var now = new Date().getTime()
+            var cententData = {
+                toUser: datas.FromUserName,
+                fromUser: datas.ToUserName,
+                time: now,
+                MsgType: 'text',
+                content: null
+            }
+            if (datas.MsgType === 'event') {
+                if (datas.Event === 'subscribe') {
+                    cententData.content = {
+                        text: '欢迎关注这是一个正在开发的测试公众号！'
+                    }
+                }
+            }
+            if (datas.MsgType === 'text') {
+                if (datas.Content === '【收到不支持的消息类型，暂无法显示】') {
+                    cententData.content = {
+                        text: '调皮，乱发什么不知道',
+                        MsgId: datas.MsgId
+                    }
+                } else {
+                    cententData.content = {
+                        text: '你刚才发了' + datas.Content + '给我',
+                        MsgId: datas.MsgId
+                    }
+                }
 
+            }
+            if (datas.MsgType === 'image') {
+                cententData.MsgType = 'image'
+                cententData.PicUrl = datas.PicUrl
+                cententData.content = {
+                    MediaId: datas.MediaId
+                }
+            }
+            if (datas.MsgType === 'voice') {
+                cententData.MsgType = 'text'
+                cententData.content = {
+                    text: '你刚才说了-' + datas.Recognition,
+                    MediaId: datas.MediaId
+                }
+            }
+            if (datas.MsgType === 'video') {
+                cententData.MsgType = 'text'
+                cententData.content = {
+                    text: '这个视频看不了，我先留着',
+                    MediaId: datas.MediaId
+                }
+            }
+            if (cententData.content) {
+                resolve(cententData)
+            }
+        }).then(res => {
+            return res
+        })
+
+    }
+    // return new Promise(function (resolve, reject) {
+    //     datas.MsgType === 'text'
+    // })
 }

@@ -33,7 +33,6 @@ function formatCentent(data) {
                     fromartXml[keyName].push(formatCentent(item.t))
                 }
             }
-            // console.log('aaa', keys[i], data[keys[i]])
         }
     }
     return fromartXml
