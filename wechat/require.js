@@ -1,6 +1,7 @@
 var path = require('path');
 var wechat = path.join(__dirname, '../bili/wechat.txt')
 var axios = require('axios')
+var axiosHttp = require('./menu')
 module.exports = function Accessid(opts) {
     let _this = this
     _this.appID = opts.appID
@@ -14,6 +15,7 @@ module.exports = function Accessid(opts) {
                 if (res) {
                     if (_this.verificationlegitimate(JSON.parse(res))) {
                         console.log(res)
+                        axiosHttp(res)
                     } else {
                         _this.updateaAccessid(_this)
                     }
@@ -77,7 +79,7 @@ module.exports = function Accessid(opts) {
                     }
                 } else {
                     cententData.content = {
-                        text: '你刚才发了' + datas.Content + '给我',
+                        text: '你刚才发了' + datas.Content + '给我 https://www.baidu.com',
                         MsgId: datas.MsgId
                     }
                 }

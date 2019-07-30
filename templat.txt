@@ -1,0 +1,63 @@
+ var text = '欢迎关注我的公众号哦！！'
+            if (data.MsgType === 'event') {
+                if (data.Event === 'subscribe') {
+                    var now = new Date().getTime()
+                    if (data.FromUserName === 'oO9M05iHPC6bEqQww9OzGxqvHb7c') {
+                        _this.response.status = 200
+                        _this.response.type = 'application/xml'
+                        _this.response.body = ('<xml>' +
+                            '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
+                            '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
+                            '<CreateTime>' + now + '</CreateTime>' +
+                            '<MsgType><![CDATA[text]]></MsgType>' +
+                            '<Content><![CDATA[哎呦！你关注我的公众号啦！]]></Content>' +
+                            '</xml>')
+                        return
+                    }
+                    if (data.FromUserName === 'oO9M05lUR5nGNxRIChnijtGNms94') {
+                        _this.response.status = 200
+                        _this.response.type = 'application/xml'
+                        _this.response.body = ('<xml>' +
+                            '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
+                            '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
+                            '<CreateTime>' + now + '</CreateTime>' +
+                            '<MsgType><![CDATA[text]]></MsgType>' +
+                            '<Content><![CDATA[嗨，欢迎关注我的公众号哦！]]></Content>' +
+                            '</xml>')
+                    }
+                    _this.response.status = 200
+                    _this.response.type = 'application/xml'
+                    _this.response.body = ('<xml>' +
+                        '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
+                        '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
+                        '<CreateTime>' + now + '</CreateTime>' +
+                        '<MsgType><![CDATA[text]]></MsgType>' +
+                        '<Content><![CDATA[' + text + ']]></Content>' +
+                        '</xml>')
+
+                }
+            }
+            if (data.MsgType === 'text') {
+                _this.response.status = 200
+                _this.response.type = 'application/xml'
+                _this.response.body = "<xml>" +
+                    '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
+                    '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
+                    "<CreateTime>" + now + "</CreateTime>" +
+                    "<MsgType><![CDATA[text]]></MsgType>" +
+                    "<Content><![CDATA[还没开发好哈，不用试了！！！]]></Content>" +
+                    "<MsgId>" + data.MsgId + "</MsgId>" +
+                    "</xml>"
+                if (data.Content === '我爱你') {
+                    _this.response.status = 200
+                    _this.response.type = 'application/xml'
+                    _this.response.body = "<xml>" +
+                        '<ToUserName><![CDATA[' + data.FromUserName + ']]></ToUserName>' +
+                        '<FromUserName><![CDATA[' + data.ToUserName + ']]></FromUserName>' +
+                        "<CreateTime>" + now + "</CreateTime>" +
+                        "<MsgType><![CDATA[text]]></MsgType>" +
+                        "<Content><![CDATA[嘿嘿，你好骚！！！]]></Content>" +
+                        "<MsgId>" + data.MsgId + "</MsgId>" +
+                        "</xml>"
+                }
+            }
